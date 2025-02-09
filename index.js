@@ -30,6 +30,8 @@ async function run() {
 
     //Marathon APIs
     const marathonsCollection = client.db('marathonManagemt').collection('marathons');
+    const marathonRegisterCollection = client.db('marathonManagemt').collection('marathon-applications');
+
     app.get('/marathons', async(req, res) => {
         const cursor = marathonsCollection.find();
         const result = await cursor.toArray();
@@ -41,6 +43,22 @@ async function run() {
       const query = {_id : new ObjectId(id)}
       const result = await marathonsCollection.findOne(query)
       res.send(result)
+    })
+
+    //Marathon Register Api
+
+    app.get('/marathon-register', async (req, res) => {
+      const email = req.query.email;
+      const query = { applicant_email: email }
+      const result = await marathonRegisterCollection.find(query).toArray();
+      res.send(result);
+    })
+
+    app.post('/marathon-registers', async(req,res) => {
+      const register = req.body;
+      const result = await marathonRegisterCollection.insertOne(register);
+      res.send(result)
+
     })
 
 
