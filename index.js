@@ -31,6 +31,7 @@ async function run() {
     //Marathon APIs
     const marathonsCollection = client.db('marathonManagemt').collection('marathons');
     const marathonRegisterCollection = client.db('marathonManagemt').collection('marathon-applications');
+    
 
     app.get('/marathons', async(req, res) => {
         const cursor = marathonsCollection.find();
@@ -51,6 +52,21 @@ async function run() {
       const email = req.query.email;
       const query = { applicant_email: email }
       const result = await marathonRegisterCollection.find(query).toArray();
+
+      for (const application of result) {
+        const query1 = { _id: new ObjectId(application.marathon_id) }
+        const marathon = await marathonsCollection.findOne(query1);
+        if (marathon) {
+            application.title = marathon.title;
+            application.photoURL = marathon.photoURL;
+            application.description = marathon.description;
+            application.marathonStart = marathon.marathonStart;
+            application.distance = marathon.distance;
+            application.location = marathon.location;
+
+        }
+    }
+
       res.send(result);
     })
 
