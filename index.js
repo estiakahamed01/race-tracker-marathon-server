@@ -46,6 +46,12 @@ async function run() {
       res.send(result)
     })
 
+    app.post('/marathons' , async(req,res) => {
+      const newMarathon = req.body;
+      const result = await marathonsCollection.insertOne(newMarathon)
+      res.send(result)
+    })
+
     //Marathon Register Api
 
     app.get('/marathon-register', async (req, res) => {
